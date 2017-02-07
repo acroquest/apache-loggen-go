@@ -38,7 +38,7 @@ $ go run example/main.go -d 3
 
 ## References
 Some functions and ideas are used as a reference from...
-- [tamtam180/apache_log_gen](https://github.com/tamtam180/apache_log_gen).
+- [tamtam180/apache_log_gen](https://github.com/tamtam180/apache_log_gen)
 - [Art-Wolf/ApacheLogGenerator](https://github.com/Art-Wolf/ApacheLogGenerator)
 
 ## Contact

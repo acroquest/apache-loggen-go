@@ -84,7 +84,7 @@ func returnNewList(path string) []string {
 func ReturnUserAgent() string {
 	rand.Seed(time.Now().UTC().UnixNano())
 	if len(useragentList) == 0 {
-		useragentList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen/resources/useragents.txt")
+		useragentList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/useragents.txt")
 	}
 	useragent := useragentList[rand.Intn(len(useragentList))]
 	return useragent
@@ -92,7 +92,7 @@ func ReturnUserAgent() string {
 
 func ReturnRequest() string {
 	if len(categoryList) == 0 {
-		categoryList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen/resources/categories.txt")
+		categoryList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/categories.txt")
 	}
 	category := categoryList[rand.Intn(len(categoryList))]
 

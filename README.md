@@ -4,7 +4,7 @@ It creates long-term log data very easily.
 
 ## Usage
 ```bash
-$ git clone github.com/acroquest/apache-loggen
+$ go get github.com/acroquest/apache-loggen
 $ go run example/main.go -d 3
 ```
 

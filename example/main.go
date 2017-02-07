@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/acroquest/apache-loggen"
+	"github.com/acroquest/apache-loggen-go"
 )
 
 func main() {

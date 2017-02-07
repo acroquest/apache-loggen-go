@@ -21,6 +21,16 @@ func randInt(min int, max int) string {
 	return strconv.Itoa(min + rand.Intn(max-min))
 }
 
+func normRand(mean float64, sd float64) string {
+	rand.Seed(time.Now().UnixNano())
+	for {
+		randNum := rand.NormFloat64() * mean * sd
+		if randNum >= mean {
+			return strconv.FormatFloat(randNum, 'g', 4, 64)
+		}
+	}
+}
+
 // TODO: exclude private IP address
 func Ipv4Address() string {
 	var ipStr string
@@ -48,21 +58,9 @@ func DocType() string {
 	return s[rand.Intn(len(s))]
 }
 
-func ReturnCode() string {
+func ReturnStatusCode() string {
 	s := []string{"200", "301", "403", "404", "500"}
 	return s[rand.Intn(len(s))]
-}
-
-func RandomString(strlen int) string {
-	rand.Seed(time.Now().UTC().UnixNano())
-	const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
-	result := make([]byte, strlen)
-
-	for i := 0; i < strlen; i++ {
-		result[i] = chars[rand.Intn(len(chars))]
-	}
-
-	return string(result)
 }
 
 func returnNewList(path string) []string {
@@ -114,11 +112,8 @@ func ReturnReferer() string {
 func ReturnRecord(i int) string {
 	bytes := randInt(20, 5000)
 	referer := ReturnReferer()
-	responseTime := randInt(20000, 30000)
-	if random := rand.Intn(1000); random == 1 {
-		responseTime = randInt(60000, 80000)
-	}
-	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + ReturnRequest() + ReturnCode() + " " + bytes + " " + referer + " \"" + ReturnUserAgent() + "\" " + responseTime
+	responseTime := normRand(20000.0, 0.25)
+	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + ReturnRequest() + ReturnStatusCode() + " " + bytes + " " + referer + " \"" + ReturnUserAgent() + "\" " + responseTime
 
 }
 

@@ -8,12 +8,14 @@ $ git clone github.com/acroquest/apache-loggen
 $ go run example/main.go -d 3
 ```
 
-- by setting `-d 3` option, you can generate log data from 3 day's before the present to now.
+- by setting `-d 3` option, you can generate log data from 3 days before the present to now.
 
 ## Output
 
 ```
 100.174.112.61 - - [06/Feb/2017:14:41:08 +0900] "POST /category/games HTTP/1.1" 403 1286 "-" "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36" 24478
+...
+158.208.79.152 - - [07/Feb/2017:14:41:08 +0900] "DELETE /category/health HTTP/1.1" 403 1977 "-" "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36" 23184
 ```
 
 |No.|Value|Description|

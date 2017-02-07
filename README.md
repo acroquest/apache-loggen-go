@@ -1,8 +1,9 @@
-# apache-loggen
-Apache-loggen is a Golang script generating dummy apache-formatted log data.
+# apache-loggen-go
+Apache-loggen-go is a Golang script to generate dummy apache-formatted log data.
 It creates long-term log data very easily.
 
 ## Usage
+
 ```bash
 $ go get github.com/acroquest/apache-loggen
 $ go run example/main.go -d 3
@@ -34,6 +35,11 @@ $ go run example/main.go -d 3
 ## TODO
 - Write Test
 - Enable to configure parameter
+
+## References
+Some functions and ideas are used as a reference from...
+- [tamtam180/apache_log_gen](https://github.com/tamtam180/apache_log_gen).
+- [Art-Wolf/ApacheLogGenerator](https://github.com/Art-Wolf/ApacheLogGenerator)
 
 ## Contact
 Kohei Suzuki [@skjune12](http://github.com/skjune12)

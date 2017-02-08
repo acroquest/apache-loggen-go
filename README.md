@@ -10,7 +10,7 @@ $ go run example/main.go -d 3 -d 0.3
 ```
 
 - by setting `-d 3` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
-- by setting `-e 3` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`(%))
+- by setting `-e 0.3` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)
 
 ## Output
 

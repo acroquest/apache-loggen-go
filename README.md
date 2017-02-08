@@ -6,7 +6,7 @@ It creates long-term log data very easily.
 
 ```bash
 $ go get github.com/acroquest/apache-loggen-go
-$ go run example/main.go -d 3 -d 0.3
+$ go run example/main.go -d 3 -e 0.3
 ```
 
 - by setting `-d 3` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)

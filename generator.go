@@ -101,7 +101,7 @@ func RequestType() string {
 	return s[rand.Intn(len(s))]
 }
 
-func ReturnStatusCode(errRate float64) string {
+func HttpStatusCode(errRate float64) string {
 	rand.NewSource(time.Now().UnixNano())
 	if causeErr(errRate) == false {
 		return "200"
@@ -111,7 +111,7 @@ func ReturnStatusCode(errRate float64) string {
 	}
 }
 
-func ReturnUserAgent() string {
+func UserAgent() string {
 	rand.Seed(time.Now().UTC().UnixNano())
 	if len(useragentList) == 0 {
 		useragentList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/useragents.txt")
@@ -120,7 +120,7 @@ func ReturnUserAgent() string {
 	return useragent
 }
 
-func ReturnRequest() string {
+func Request() string {
 	if len(categoryList) == 0 {
 		categoryList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/categories.txt")
 	}
@@ -134,16 +134,21 @@ func ReturnRequest() string {
 	}
 }
 
-func ReturnReferer() string {
+func Referer() string {
 	referer := "-"
 	return "\"" + referer + "\""
 }
 
-func ReturnRecord(i int, errRate float64) string {
-	bytes := floatToIntString(randLogNormal(0.0, 0.5) * 2000)
-	referer := ReturnReferer()
-	responseTime := floatToIntString(20000 * randLogNormal(0.0, 0.5))
-	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + ReturnRequest() + ReturnStatusCode(errRate) + " " + bytes + " " + referer + " \"" + ReturnUserAgent() + "\" " + responseTime
+func SizeofBytes(bytes int) string {
+	return floatToIntString(randLogNormal(0.0, 0.5) * float64(bytes))
+}
+
+func ResponseTime(millisecond int) string {
+	return floatToIntString(randLogNormal(0.0, 0.5) * float64(millisecond))
+}
+
+func GetRecord(i int, errRate float64) string {
+	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(errRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
 }
 
 // TODO change the amount of log data every day.
@@ -167,23 +172,23 @@ func GenerateLog(days int, errRate float64) {
 		switch {
 		case hour >= 1 && hour <= 5:
 			if j <= 2+weight {
-				fmt.Println(ReturnRecord(i, errRate))
+				fmt.Println(GetRecord(i, errRate))
 			}
 		case hour >= 6 && hour <= 9:
 			if j <= 4+weight {
-				fmt.Println(ReturnRecord(i, errRate))
+				fmt.Println(GetRecord(i, errRate))
 			}
 		case hour >= 10 && hour <= 17:
 			if j <= 6+weight {
-				fmt.Println(ReturnRecord(i, errRate))
+				fmt.Println(GetRecord(i, errRate))
 			}
 		case hour >= 18 && hour <= 23:
 			if j <= 6+weight {
-				fmt.Println(ReturnRecord(i, errRate))
+				fmt.Println(GetRecord(i, errRate))
 			}
 		default:
 			if j <= 4+weight {
-				fmt.Println(ReturnRecord(i, errRate))
+				fmt.Println(GetRecord(i, errRate))
 			}
 		}
 	}

@@ -153,6 +153,7 @@ func GetRecord(i int, errRate float64) string {
 
 // TODO change the amount of log data every day.
 func GenerateLog(days int, errRate float64) {
+
 	var weight int
 	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
@@ -172,24 +173,30 @@ func GenerateLog(days int, errRate float64) {
 		switch {
 		case hour >= 1 && hour <= 5:
 			if j <= 2+weight {
-				fmt.Println(GetRecord(i, errRate))
+				outputMultipleRecord(i, errRate)
 			}
 		case hour >= 6 && hour <= 9:
 			if j <= 4+weight {
-				fmt.Println(GetRecord(i, errRate))
+				outputMultipleRecord(i, errRate)
 			}
 		case hour >= 10 && hour <= 17:
 			if j <= 6+weight {
-				fmt.Println(GetRecord(i, errRate))
+				outputMultipleRecord(i, errRate)
 			}
 		case hour >= 18 && hour <= 23:
 			if j <= 6+weight {
-				fmt.Println(GetRecord(i, errRate))
+				outputMultipleRecord(i, errRate)
 			}
 		default:
 			if j <= 4+weight {
-				fmt.Println(GetRecord(i, errRate))
+				outputMultipleRecord(i, errRate)
 			}
 		}
+	}
+}
+
+func outputMultipleRecord(days int, errRate float64) {
+	for i := 0; i < randInt(1, 3); i++ {
+		fmt.Println(GetRecord(days, errRate))
 	}
 }

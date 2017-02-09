@@ -36,8 +36,12 @@ func floatToIntString(input float64) string {
 	return strconv.Itoa(int(input))
 }
 
-func randInt(min int, max int) string {
-	return strconv.Itoa(min + rand.Intn(max-min))
+func intToString(input int) string {
+	return strconv.Itoa(input)
+}
+
+func randInt(min int, max int) int {
+	return min + rand.Intn(max-min)
 }
 
 // Generate random number based on log-normal distribution
@@ -68,10 +72,11 @@ func returnNewList(path string) []string {
 }
 
 func zitter(i int) int {
-	min := i - 3
-	max := i + 3
-	if min <= 0 {
-		return 0
+	rand.Seed(time.Now().UnixNano())
+	min := i - randInt(1, 2)
+	max := i + randInt(1, 2)
+	if min < 0 {
+		min = 1
 	}
 	return min + rand.Intn(max-min)
 }
@@ -79,10 +84,10 @@ func zitter(i int) int {
 // TODO: exclude private IP address
 func Ipv4Address() string {
 	var ipStr string
-	ipStr = randInt(1, 223) + "."
-	ipStr += randInt(0, 255) + "."
-	ipStr += randInt(0, 255) + "."
-	ipStr += randInt(0, 255)
+	ipStr = intToString(randInt(1, 223)) + "."
+	ipStr += intToString(randInt(0, 255)) + "."
+	ipStr += intToString(randInt(0, 255)) + "."
+	ipStr += intToString(randInt(0, 255))
 	return ipStr
 }
 
@@ -125,7 +130,7 @@ func ReturnRequest() string {
 	if i < 7 {
 		return "\"" + RequestType() + " /category/" + category + " HTTP/1.1\" "
 	} else {
-		return "\"" + RequestType() + " /" + category + "/" + randInt(1, 999) + " HTTP/1.1\" "
+		return "\"" + RequestType() + " /" + category + "/" + intToString(randInt(1, 999)) + " HTTP/1.1\" "
 	}
 }
 
@@ -135,7 +140,7 @@ func ReturnReferer() string {
 }
 
 func ReturnRecord(i int, errRate float64) string {
-	bytes := randInt(20, 5000)
+	bytes := floatToIntString(randLogNormal(0.0, 0.5) * 2000)
 	referer := ReturnReferer()
 	responseTime := floatToIntString(20000 * randLogNormal(0.0, 0.5))
 	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + ReturnRequest() + ReturnStatusCode(errRate) + " " + bytes + " " + referer + " \"" + ReturnUserAgent() + "\" " + responseTime
@@ -143,7 +148,9 @@ func ReturnRecord(i int, errRate float64) string {
 
 // TODO change the amount of log data every day.
 func GenerateLog(days int, errRate float64) {
+	var weight int
 	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
+	beforeHour := endTime.Hour()
 
 	// generating log data every 1 second
 	for i := 0; endTime.Sub(currentTime.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
@@ -151,25 +158,31 @@ func GenerateLog(days int, errRate float64) {
 		rand.Seed(time.Now().UnixNano())
 		j := rand.Intn(10)
 
+		// add weight for adding variation to the amount of data
+		if hour != beforeHour {
+			weight = zitter(randInt(1, 3))
+			beforeHour = hour
+		}
+
 		switch {
 		case hour >= 1 && hour <= 5:
-			if j <= 2 {
+			if j <= 2+weight {
 				fmt.Println(ReturnRecord(i, errRate))
 			}
 		case hour >= 6 && hour <= 9:
-			if j <= 4 {
+			if j <= 4+weight {
 				fmt.Println(ReturnRecord(i, errRate))
 			}
 		case hour >= 10 && hour <= 17:
-			if j <= 6 {
+			if j <= 6+weight {
 				fmt.Println(ReturnRecord(i, errRate))
 			}
 		case hour >= 18 && hour <= 23:
-			if j <= 8 {
+			if j <= 6+weight {
 				fmt.Println(ReturnRecord(i, errRate))
 			}
 		default:
-			if j <= 6 {
+			if j <= 4+weight {
 				fmt.Println(ReturnRecord(i, errRate))
 			}
 		}

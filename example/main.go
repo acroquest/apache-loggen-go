@@ -8,13 +8,13 @@ import (
 func main() {
 	var (
 		days    int
-		errRate int
+		errRate float64
 	)
 	flag.IntVar(&days, "day", 1, "days to output")
 	flag.IntVar(&days, "d", 1, "same as -day")
-	flag.IntVar(&errRate, "err", 1, "error rate")
-	flag.IntVar(&errRate, "e", 1, "same as -err")
+	flag.Float64Var(&errRate, "err", 0.1, "error rate")
+	flag.Float64Var(&errRate, "e", 0.1, "same as -err")
 	flag.Parse()
 
-	loggen.GenerateLog(days)
+	loggen.GenerateLog(days, errRate)
 }

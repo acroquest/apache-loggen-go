@@ -40,6 +40,35 @@ func intToString(input int) string {
 	return strconv.Itoa(input)
 }
 
+func outputMultipleRecord(days int, errRate float64) {
+	for i := 0; i < randInt(1, 3); i++ {
+		fmt.Println(GetRecord(days, errRate))
+	}
+}
+
+func outputToFile(days int, errRate float64, filename string) {
+	// 1. check whether file is exist or not, and if file is exist, delete original file.
+	_, err := os.Stat(filename)
+	if err == nil {
+		// file is exist
+		if err := os.Remove(filename); err != nil {
+			panic(err)
+		}
+	}
+
+	// 2. create a new file and write the record to the file.
+	file, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	for i := 0; i < randInt(1, 3); i++ {
+		file.Write(([]byte)(GetRecord(days, errRate)))
+		file.Write(([]byte)("\n"))
+	}
+}
+
 func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
@@ -153,7 +182,6 @@ func GetRecord(i int, errRate float64) string {
 
 // TODO change the amount of log data every day.
 func GenerateLog(days int, errRate float64) {
-
 	var weight int
 	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
@@ -195,8 +223,44 @@ func GenerateLog(days int, errRate float64) {
 	}
 }
 
-func outputMultipleRecord(days int, errRate float64) {
-	for i := 0; i < randInt(1, 3); i++ {
-		fmt.Println(GetRecord(days, errRate))
+func GenerateLogToFile(days int, errRate float64, filename string) {
+	var weight int
+	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
+	beforeHour := endTime.Hour()
+
+	// generating log data every 1 second
+	for i := 0; endTime.Sub(currentTime.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
+		hour := currentTime.Add(time.Second * time.Duration(i)).Hour()
+		rand.Seed(time.Now().UnixNano())
+		j := rand.Intn(10)
+
+		// add weight for adding variation to the amount of data
+		if hour != beforeHour {
+			weight = zitter(randInt(1, 3))
+			beforeHour = hour
+		}
+
+		switch {
+		case hour >= 1 && hour <= 5:
+			if j <= 2+weight {
+				outputToFile(i, errRate, filename)
+			}
+		case hour >= 6 && hour <= 9:
+			if j <= 4+weight {
+				outputToFile(i, errRate, filename)
+			}
+		case hour >= 10 && hour <= 17:
+			if j <= 6+weight {
+				outputToFile(i, errRate, filename)
+			}
+		case hour >= 18 && hour <= 23:
+			if j <= 6+weight {
+				outputToFile(i, errRate, filename)
+			}
+		default:
+			if j <= 4+weight {
+				outputToFile(i, errRate, filename)
+			}
+		}
 	}
 }

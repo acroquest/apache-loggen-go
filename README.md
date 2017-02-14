@@ -6,11 +6,12 @@ It creates long-term log data very easily.
 
 ```bash
 $ go get github.com/acroquest/apache-loggen-go
-$ go run example/main.go -d 3 -e 0.3
+$ go run example/main.go -d 3 -e 0.3 -f apache-3days.log
 ```
 
-- by setting `-d 3` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
-- by setting `-e 0.3` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)
+- by setting `-d` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
+- by setting `-e` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)
+- by setting `-f` option, you can output log data to the specified file. When `-f` option does not set, data is output to stdout.
 
 ## Output
 

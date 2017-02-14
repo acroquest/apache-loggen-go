@@ -7,14 +7,18 @@ import (
 
 func main() {
 	var (
-		days    int
-		errRate float64
+		days     int
+		errRate  float64
+		filename string
 	)
-	flag.IntVar(&days, "day", 1, "days to output")
 	flag.IntVar(&days, "d", 1, "same as -day")
-	flag.Float64Var(&errRate, "err", 0.1, "error rate")
 	flag.Float64Var(&errRate, "e", 0.1, "same as -err")
+	flag.StringVar(&filename, "f", "", "filename to output the record (if not specified, output to stdout)")
 	flag.Parse()
 
-	loggen.GenerateLog(days, errRate)
+	if filename == "" {
+		loggen.GenerateLog(days, errRate)
+	} else {
+		loggen.GenerateLogToFile(days, errRate, filename)
+	}
 }

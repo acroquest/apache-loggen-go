@@ -2,8 +2,7 @@ package main
 
 import (
 	"flag"
-	// "github.com/acroquest/apache-loggen-go"
-	"../"
+	"github.com/acroquest/apache-loggen-go"
 	"strconv"
 	"strings"
 )

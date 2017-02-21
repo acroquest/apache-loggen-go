@@ -47,26 +47,27 @@ func outputMultipleRecord(days int, errRate float64) {
 }
 
 func outputToFile(days int, errRate float64, filename string) {
-	// 1. check whether file is exist or not, and if file is exist, delete original file.
-	_, err := os.Stat(filename)
-	if err == nil {
-		// file is exist
-		if err := os.Remove(filename); err != nil {
-			panic(err)
-		}
-	}
-
-	// 2. create a new file and write the record to the file.
-	file, err := os.Create(filename)
-	if err != nil {
-		panic(err)
-	}
+	/*
+		_, err := os.Stat(filename)
+		if err != nil {
+			// file is not exist
+			file, err := os.Create(filename)
+			if err != nil {
+				panic(err)
+			}
+			defer file.Close()
+		} else {
+	*/
+	file, _ := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	defer file.Close()
 
+	writer := bufio.NewWriter(file)
 	for i := 0; i < randInt(1, 3); i++ {
-		file.Write(([]byte)(GetRecord(days, errRate)))
-		file.Write(([]byte)("\n"))
+		record := ([]byte)(GetRecord(days, errRate))
+		writer.Write(record)
+		writer.Flush()
 	}
+
 }
 
 func randInt(min int, max int) int {

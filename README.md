@@ -1,17 +1,19 @@
 # apache-loggen-go
-Apache-loggen-go is a Golang script to generate dummy apache-formatted log data.
-It creates long-term log data very easily.
+Apache-loggen-go is a Golang script to generate dummy apache-formatted access log data.
+It can create long-term access log very easily.
 
 ## Usage
 
 ```bash
 $ go get github.com/acroquest/apache-loggen-go
-$ go run example/main.go -d 3 -e 0.3 -f apache-3days.log
+$ go run example/main.go -d 3 -e 0.3 -f access.log
 ```
 
 - by setting `-d` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
 - by setting `-e` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)
 - by setting `-f` option, you can output log data to the specified file. When `-f` option does not set, data is output to stdout.
+- by setting `-n` option, you can create multiple log files at once. For example, when you set `-n 10`, the files `access-1.log`, `access-2.log` ... `access-10.log` are created. (default parameter is `0`)
+
 
 ## Output
 
@@ -35,7 +37,7 @@ $ go run example/main.go -d 3 -e 0.3 -f apache-3days.log
 |10| 24478 | ResponseTime (ms) |
 
 ## TODO
-- Write Test
+- Write Test code
 - Enable to configure parameter
 
 ## References
@@ -44,4 +46,4 @@ Some functions and ideas are used as a reference from...
 - [Art-Wolf/ApacheLogGenerator](https://github.com/Art-Wolf/ApacheLogGenerator)
 
 ## Contact
-Kohei Suzuki [@skjune12](http://github.com/skjune12)
+- Kohei Suzuki [@skjune12](http://github.com/skjune12)

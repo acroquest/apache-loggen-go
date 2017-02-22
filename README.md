@@ -5,9 +5,12 @@ It can create long-term access log very easily.
 ## Usage
 
 ```bash
-$ go get github.com/acroquest/apache-loggen-go
+$ git clone https://github.com/acroquest/apache-loggen-go && cd $_
+$ go get
 $ go run example/main.go -d 3 -e 0.3 -f access.log
 ```
+
+You can see help message by setting `-h` flag.
 
 - by setting `-d` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
 - by setting `-e` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)

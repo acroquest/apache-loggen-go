@@ -7,18 +7,21 @@ import (
 	"strings"
 )
 
-func main() {
-	var (
-		days       int
-		errRate    float64
-		filename   string
-		numofFiles int
-	)
+var (
+	days       int
+	errRate    float64
+	filename   string
+	numofFiles int
+)
 
-	flag.IntVar(&days, "d", 1, "same as -day")
-	flag.Float64Var(&errRate, "e", 0.1, "same as -err")
+func init() {
+	flag.IntVar(&days, "d", 1, "from which days ago starting generating log")
+	flag.Float64Var(&errRate, "e", 0.1, "error rate")
 	flag.StringVar(&filename, "f", "", "filename to output the record (if not specified, output to stdout)")
 	flag.IntVar(&numofFiles, "n", 1, "number of files to output")
+}
+
+func main() {
 	flag.Parse()
 
 	if filename == "" {

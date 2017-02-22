@@ -15,7 +15,7 @@ var (
 	useragentList []string
 	categoryList  []string
 	endTime       = time.Now()
-	currentTime   = endTime
+	marker        = endTime
 )
 
 func causeErr(errRate float64) bool {
@@ -110,7 +110,7 @@ func Ipv4Address() string {
 }
 
 func RequestTime(i int) string {
-	returnTime := currentTime.Add(time.Second * time.Duration(i))
+	returnTime := marker.Add(time.Second * time.Duration(i))
 	return returnTime.Format("02/Jan/2006:15:04:05 -0700")
 }
 
@@ -172,12 +172,12 @@ func GetRecord(i int, errRate float64) string {
 // TODO change the amount of log data every day.
 func GenerateLog(days int, errRate float64) {
 	var weight int
-	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
+	marker = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
 
 	// generating log data every 1 second
-	for i := 0; endTime.Sub(currentTime.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
-		hour := currentTime.Add(time.Second * time.Duration(i)).Hour()
+	for i := 0; endTime.Sub(marker.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
+		hour := marker.Add(time.Second * time.Duration(i)).Hour()
 		rand.Seed(time.Now().UnixNano())
 		j := rand.Intn(10)
 
@@ -214,12 +214,12 @@ func GenerateLog(days int, errRate float64) {
 
 func GenerateLogToFile(days int, errRate float64, filename string) {
 	var weight int
-	currentTime = endTime.Add(-24 * time.Hour * time.Duration(days))
+	marker = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
 
 	// generating log data every 1 second
-	for i := 0; endTime.Sub(currentTime.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
-		hour := currentTime.Add(time.Second * time.Duration(i)).Hour()
+	for i := 0; endTime.Sub(marker.Add(time.Second*time.Duration(i))) >= 0; i += 1 {
+		hour := marker.Add(time.Second * time.Duration(i)).Hour()
 		rand.Seed(time.Now().UnixNano())
 		j := rand.Intn(10)
 

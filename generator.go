@@ -47,27 +47,15 @@ func outputMultipleRecord(days int, errRate float64) {
 }
 
 func outputToFile(days int, errRate float64, filename string) {
-	/*
-		_, err := os.Stat(filename)
-		if err != nil {
-			// file is not exist
-			file, err := os.Create(filename)
-			if err != nil {
-				panic(err)
-			}
-			defer file.Close()
-		} else {
-	*/
 	file, _ := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	defer file.Close()
 
 	writer := bufio.NewWriter(file)
 	for i := 0; i < randInt(1, 3); i++ {
-		record := ([]byte)(GetRecord(days, errRate))
+		record := ([]byte)(GetRecord(days, errRate) + "\n")
 		writer.Write(record)
 		writer.Flush()
 	}
-
 }
 
 func randInt(min int, max int) int {

@@ -7,11 +7,13 @@ import (
 )
 
 type Config struct {
-	Filename   string  `json:"filename"`
-	Prefix     string  `json:"prefix"`
-	Days       int     `json:"days"`
-	NumOfFiles int     `json:"num_of_files"`
-	ErrRate    float64 `json:"error_rate"`
+	Filename     string  `json:"filename"`
+	Prefix       string  `json:"prefix"`
+	Days         int     `json:"days"`
+	NumOfFiles   int     `json:"num_of_files"`
+	ErrRate      float64 `json:"error_rate"`
+	Bytes        int     `json:"bytes"`
+	ResponseTime int     `json:"response_time"`
 }
 
 func LoadConfig(filename string) Config {

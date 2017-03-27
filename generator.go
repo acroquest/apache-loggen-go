@@ -218,7 +218,7 @@ func ResponseTime(millisecond int) string {
 }
 
 func GetRecord(i int, config Config) string {
-	return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
+	return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(config.Bytes) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(config.ResponseTime)
 }
 
 func GenerateNewRecord(config Config) {

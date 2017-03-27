@@ -7,7 +7,8 @@ It can create long-term access log very easily.
 ```bash
 $ git clone https://github.com/acroquest/apache-loggen-go && cd $_
 $ go get
-$ go run example/main.go -d 3 -e 0.3 -f access.log
+$ vi example/config.json
+$ go run example/main.go
 ```
 
 You can set some options by configuring `config.json`

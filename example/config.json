@@ -1,0 +1,7 @@
+{
+    "prefix": "192.168.0.0/16",
+    "days": 1,
+    "filename": "",
+    "error_rate": 0.01,
+    "num_of_files": 3
+}

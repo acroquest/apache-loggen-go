@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -60,6 +61,39 @@ func outputToFile(days int, errRate float64, filename string) {
 	}
 }
 
+func outputRecord(tick int, config Config) {
+	filename := config.Filename
+	if filename == "" {
+		// ファイル名が指定されているときの処理
+		for i := 0; i < randInt(1, 3); i++ {
+			fmt.Println(GetRecordv2(tick, config))
+		}
+		// ファイル名が指定されていないときの処理
+	} else {
+		splitted := strings.Split(config.Filename, ".")
+		if len(splitted) == 1 {
+			for i := 1; i <= config.NumOfFiles; i++ {
+				filename = filename + "-" + strconv.Itoa(i)
+			}
+		} else {
+			head := strings.Join(splitted[:len(splitted)-1], "")
+			for i := 1; i <= config.NumOfFiles; i++ {
+				filename = head + "-" + strconv.Itoa(i) + "." + splitted[len(splitted)-1]
+			}
+
+			file, _ := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+			defer file.Close()
+
+			writer := bufio.NewWriter(file)
+			for i := 0; i < randInt(1, 3); i++ {
+				record := ([]byte)(GetRecordv2(tick, config) + "\n")
+				writer.Write(record)
+				writer.Flush()
+			}
+		}
+	}
+}
+
 func randInt(min int, max int) int {
 	return min + rand.Intn(max-min)
 }
@@ -101,9 +135,7 @@ func zitter(i int) int {
 	return min + rand.Intn(max-min)
 }
 
-// TODO: exclude private IP address
 func Ipv4Address(cidr string) string {
-	fmt.Println("hoge")
 	if len(ipList) == 0 {
 		fmt.Println(len(ipList))
 		v4addr, ipnet, err := net.ParseCIDR(cidr)
@@ -190,8 +222,59 @@ func GetRecord(i int, errRate float64) string {
 	return Ipv4Address("192.168.10.0/24") + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(errRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
 }
 
+func GetRecordv2(i int, config Config) string {
+	return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
+}
+
+func GenerateNewRecord(config Config) {
+	var weight int
+	var days = config.Days
+
+	marker = endTime.Add(-24 * time.Hour * time.Duration(days))
+	beforeHour := endTime.Hour()
+
+	for tick := 0; endTime.Sub(marker.Add(time.Second*time.Duration(tick))) >= 0; tick++ {
+		hour := marker.Add(time.Second * time.Duration(tick)).Hour()
+		rand.Seed(time.Now().UnixNano())
+		j := rand.Intn(10)
+
+		// weight is used for adding variation to the amount of data
+		if hour != beforeHour {
+			weight = zitter(randInt(1, 3))
+			beforeHour = hour
+		}
+
+		switch {
+		case hour >= 1 && hour <= 5:
+			if j <= 2+weight {
+				outputRecord(tick, config)
+			}
+		case hour >= 6 && hour <= 9:
+			if j <= 4+weight {
+				outputRecord(tick, config)
+			}
+		case hour >= 10 && hour <= 17:
+			if j <= 6+weight {
+				outputRecord(tick, config)
+			}
+		case hour >= 18 && hour <= 23:
+			if j <= 6+weight {
+				outputRecord(tick, config)
+			}
+		default:
+			if j <= 4+weight {
+				outputRecord(tick, config)
+			}
+		}
+	}
+}
+
+/*
+
 // TODO change the amount of log data every day.
-func GenerateLog(days int, errRate float64) {
+func GenerateLog(config Config) {
+	var days = config.Days
+	var errRate = config.ErrRate
 	var weight int
 	marker = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
@@ -233,7 +316,10 @@ func GenerateLog(days int, errRate float64) {
 	}
 }
 
-func GenerateLogToFile(days int, errRate float64, filename string) {
+func GenerateLogToFile(config Config) {
+	var days = config.Days
+	var errRate = config.ErrRate
+	var filename = config.Filename
 	var weight int
 	marker = endTime.Add(-24 * time.Hour * time.Duration(days))
 	beforeHour := endTime.Hour()
@@ -274,3 +360,5 @@ func GenerateLogToFile(days int, errRate float64, filename string) {
 		}
 	}
 }
+
+*/

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 var (
 	useragentList []string
 	categoryList  []string
+	ipList        []string
 	endTime       = time.Now()
 	marker        = endTime
 )
@@ -100,13 +102,32 @@ func zitter(i int) int {
 }
 
 // TODO: exclude private IP address
-func Ipv4Address() string {
-	var ipStr string
-	ipStr = intToString(randInt(1, 223)) + "."
-	ipStr += intToString(randInt(0, 255)) + "."
-	ipStr += intToString(randInt(0, 255)) + "."
-	ipStr += intToString(randInt(0, 255))
-	return ipStr
+func Ipv4Address(cidr string) string {
+	fmt.Println("hoge")
+	if len(ipList) == 0 {
+		fmt.Println(len(ipList))
+		v4addr, ipnet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			panic(err)
+		}
+
+		for v4addr := v4addr.Mask(ipnet.Mask); ipnet.Contains(v4addr); increnemt(v4addr) {
+			fmt.Println("here")
+			ipList = append(ipList, v4addr.String())
+		}
+	}
+
+	ip := ipList[rand.Intn(len(ipList))]
+	return ip
+}
+
+func increnemt(ip net.IP) {
+	for j := len(ip) - 1; j >= 0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
+			break
+		}
+	}
 }
 
 func RequestTime(i int) string {
@@ -166,7 +187,7 @@ func ResponseTime(millisecond int) string {
 }
 
 func GetRecord(i int, errRate float64) string {
-	return Ipv4Address() + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(errRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
+	return Ipv4Address("192.168.10.0/24") + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(errRate) + " " + SizeofBytes(2000) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(20000)
 }
 
 // TODO change the amount of log data every day.

@@ -10,13 +10,24 @@ $ go get
 $ go run example/main.go -d 3 -e 0.3 -f access.log
 ```
 
-You can see help message by setting `-h` flag.
+You can set some options by configuring `config.json`
+There is sample configuration below.
 
-- by setting `-d` option, you can generate log data from 3 days before the present to now. (default parameter is `1`)
-- by setting `-e` option, you can generate log data including bad http status (like 403, 404, 500, etc). (default parameter is `0.1`%)
-- by setting `-f` option, you can output log data to the specified file. When `-f` option does not set, data is output to stdout.
-- by setting `-n` option, you can create multiple log files at once. For example, when you set `-n 10`, the files `access-1.log`, `access-2.log` ... `access-10.log` are created. (default parameter is `0`)
+```json
+{
+    "prefix": "192.168.0.0/16",
+    "days": 1,
+    "filename": "sample",
+    "error_rate": 0.01,
+    "num_of_files": 3
+}
+```
 
+- `prefix` means client's IP address range. When you set `192.168.0.0/16`, the client IP addresses are specified in the range of this prefix.
+- `days` can specify the length of log data. When you set `1` as the `days` option, you can generate log data from 3 days before the present to now.
+- `error_rate` option generates a log data including bad http status (like 403, 404, 500, etc). `0.01` means the log contains error status one hundledth (that is, 1%).
+- `filename` option enables the log to output the specified file. When `filename` option does not set, data is output to stdout. When it is blank, the data is written to stdout.
+- `num_of_files` option creates multiple log files at once. For example, when you set `10` as a value, the files sample-1.log, sample-2.log ... sample-10.log are created. (default parameter is 0)
 
 ## Output
 

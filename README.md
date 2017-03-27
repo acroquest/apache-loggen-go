@@ -21,7 +21,7 @@ There is sample configuration below.
     "days": 1,
     "filename": "sample",
     "error_rate": 0.01,
-    "num_of_files": 3
+    "num_of_files": 3,
     "bytes": 2000,
     "response_time": 10000
 }

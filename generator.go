@@ -190,7 +190,7 @@ func GenerateNewRecord(config Config) {
 
 func GetRecord(i int, config Config) string {
 	if config.Format == "" {
-		return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] \"" + Request() + "\" " + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(config.Bytes) + " " + "\"" + Referer() + "\" " + " \"" + UserAgent() + "\" " + ResponseTime(config.ResponseTime)
+		return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] \"" + Request() + "\" " + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(config) + " " + "\"" + Referer() + "\" " + " \"" + UserAgent() + "\" " + ResponseTime(config)
 	} else {
 		return parseFormat(i, config)
 	}
@@ -205,10 +205,10 @@ func parseFormat(i int, config Config) string {
 	formatted = strings.Replace(formatted, "%t", "["+RequestTime(i)+"]", 1)
 	formatted = strings.Replace(formatted, "%r", Request(), 1)
 	formatted = strings.Replace(formatted, "%>s", HttpStatusCode(config.ErrRate), 1)
-	formatted = strings.Replace(formatted, "%b", SizeofBytes(config.Bytes), 1)
+	formatted = strings.Replace(formatted, "%b", SizeofBytes(config), 1)
 	formatted = strings.Replace(formatted, "%{Referer}i", Referer(), 1)
 	formatted = strings.Replace(formatted, "%{User-Agent}i", UserAgent(), 1)
-	formatted = strings.Replace(formatted, "%D", ResponseTime(config.ResponseTime), 1)
+	formatted = strings.Replace(formatted, "%D", ResponseTime(config), 1)
 
 	return formatted
 }
@@ -268,8 +268,8 @@ func RequestType() string {
 	return s[rand.Intn(len(s))]
 }
 
-func ResponseTime(millisecond int) string {
-	return floatToIntString(randLogNormal(0.0, 0.5) * float64(millisecond))
+func ResponseTime(config Config) string {
+	return floatToIntString(randLogNormal(config.ResponseTime.Mu, config.ResponseTime.Sigma) * float64(config.ResponseTime.Value))
 }
 
 func UserAgent() string {
@@ -281,6 +281,6 @@ func UserAgent() string {
 	return useragent
 }
 
-func SizeofBytes(bytes int) string {
-	return floatToIntString(randLogNormal(0.0, 0.5) * float64(bytes))
+func SizeofBytes(config Config) string {
+	return floatToIntString(randLogNormal(config.Bytes.Mu, config.Bytes.Sigma) * float64(config.Bytes.Value))
 }

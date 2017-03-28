@@ -20,11 +20,19 @@ There is sample configuration below.
     "format": "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %D",
     "prefix": "192.168.0.0/16",
     "days": 1,
-    "filename": "sample",
+    "filename": "",
     "error_rate": 0.01,
     "num_of_files": 3,
-    "bytes": 2000,
-    "response_time": 10000
+    "bytes": {
+        "mu": 0.0,
+        "sigma": 0.5,
+        "value": 2000
+    },
+    "response_time": {
+        "mu": 0.0,
+        "sigma": 0.5,
+        "value": 20000
+    }
 }
 ```
 
@@ -33,8 +41,8 @@ There is sample configuration below.
 - `error_rate` option generates a log data including bad http status (like 403, 404, 500, etc). `0.01` means the log contains error status one hundledth (that is, 1%).
 - `filename` option enables the log to output the specified file. When `filename` option does not set, data is output to stdout. When it is blank, the data is written to stdout.
 - `num_of_files` option creates multiple log files at once. For example, when you set `10` as a value, the files sample-1.log, sample-2.log ... sample-10.log are created. (default parameter is 0)
-- `bytes` specifies the size of bytes. It follows the lognormal distribution with μ = 0, σ 0.5.
-- `response_time` also specifies the time of response time. It also follows the lognormal distribution with μ = 0, σ =.5.
+- `bytes` specifies the size of bytes. It follows the lognormal distribution with your configuration (in this configuration file, `μ=0.0`, `σ=0.)
+- `response_time` also specifies the time of response time. It also follows the lognormal distribution with your configurauion.
 
 ## Output
 

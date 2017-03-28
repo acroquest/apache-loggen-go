@@ -5,6 +5,14 @@
     "filename": "",
     "error_rate": 0.01,
     "num_of_files": 3,
-    "bytes": 2000,
-    "response_time": 10000
+    "bytes": {
+        "mu": 0.0,
+        "sigma": 0.5,
+        "value": 2000
+    },
+    "response_time": {
+        "mu": 0.0,
+        "sigma": 0.5,
+        "value": 20000
+    }
 }

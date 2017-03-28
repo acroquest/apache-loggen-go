@@ -17,6 +17,7 @@ There is sample configuration below.
 
 ```json
 {
+    "format": "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %D",
     "prefix": "192.168.0.0/16",
     "days": 1,
     "filename": "sample",
@@ -33,9 +34,7 @@ There is sample configuration below.
 - `filename` option enables the log to output the specified file. When `filename` option does not set, data is output to stdout. When it is blank, the data is written to stdout.
 - `num_of_files` option creates multiple log files at once. For example, when you set `10` as a value, the files sample-1.log, sample-2.log ... sample-10.log are created. (default parameter is 0)
 - `bytes` specifies the size of bytes. It follows the lognormal distribution with μ = 0, σ 0.5.
-- `response_time` also specifies the time of response time. It also follows the lognormal distribution with μ = 0, σ = 0.
-
-
+- `response_time` also specifies the time of response time. It also follows the lognormal distribution with μ = 0, σ =.5.
 
 ## Output
 
@@ -45,22 +44,21 @@ There is sample configuration below.
 158.208.79.152 - - [07/Feb/2017:14:41:08 +0900] "DELETE /category/health HTTP/1.1" 403 1977 "-" "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36" 23184
 ```
 
-|No.|Value|Description|
+|Format|Value|Description|
 |:--|:--|:--|
-|1| 100.174.112.61 | Client IP Address |
-|2| - | RemoteLogname |
-|3| - | RemoteUser |
-|4| [06/Feb/2017:14:41:08 +0900] | RequestTime |
-|5| POST /category/games HTTP/1.1 | Request |
-|6| 403 | HttpStatusCode |
-|7| 1286 | Size of Bytes |
-|8| -   |Referer |
-|9| Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36 |  User-Agent |
-|10| 24478 | ResponseTime (ms) |
+|`%h`| 100.174.112.61 | Client IP Address |
+|`%l`| - | RemoteLogname |
+|`%u`| - | RemoteUser |
+|`%t`| [06/Feb/2017:14:41:08 +0900] | RequestTime |
+|`%r`| POST /category/games HTTP/1.1 | Request |
+|`%>s`| 403 | HTTP status code |
+|`%b`| 1286 | Size of bytes |
+|`%{Referer}i`| -   |Referer |
+|`%{User-Agent}i`| Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36 |  User-Agent |
+|`%D`| 24478 | ResponseTime (ms) |
 
 ## TODO
 - Write Test code
-- Enable to configure parameter
 
 ## References
 Some functions and ideas are used as a reference from...

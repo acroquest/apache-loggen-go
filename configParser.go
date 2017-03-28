@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Format       string  `json:"format"`
 	Filename     string  `json:"filename"`
 	Prefix       string  `json:"prefix"`
 	Days         int     `json:"days"`
@@ -21,12 +22,12 @@ func LoadConfig(filename string) Config {
 
 	configFile, err := os.Open(filename)
 	if err != nil {
-		log.Fatal("Opening config file", err.Error())
+		log.Fatal("Opening config file: ", err.Error())
 	}
 
 	jsonParser := json.NewDecoder(configFile)
 	if err = jsonParser.Decode(&config); err != nil {
-		log.Fatal("Parsing config file", err.Error())
+		log.Fatal("Parsing config file: ", err.Error())
 	}
 
 	return config

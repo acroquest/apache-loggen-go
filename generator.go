@@ -39,6 +39,15 @@ func floatToIntString(input float64) string {
 	return strconv.Itoa(int(input))
 }
 
+func increnemt(ip net.IP) {
+	for j := len(ip) - 1; j >= 0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
+			break
+		}
+	}
+}
+
 func intToString(input int) string {
 	return strconv.Itoa(input)
 }
@@ -136,91 +145,6 @@ func zitter(i int) int {
 	return min + rand.Intn(max-min)
 }
 
-func Ipv4Address(cidr string) string {
-	if len(ipList) == 0 {
-		v4addr, ipnet, err := net.ParseCIDR(cidr)
-		if err != nil {
-			panic(err)
-		}
-
-		for v4addr := v4addr.Mask(ipnet.Mask); ipnet.Contains(v4addr); increnemt(v4addr) {
-			ipList = append(ipList, v4addr.String())
-		}
-	}
-
-	ip := ipList[rand.Intn(len(ipList))]
-	return ip
-}
-
-func increnemt(ip net.IP) {
-	for j := len(ip) - 1; j >= 0; j-- {
-		ip[j]++
-		if ip[j] > 0 {
-			break
-		}
-	}
-}
-
-func RequestTime(i int) string {
-	returnTime := marker.Add(time.Second * time.Duration(i))
-	return returnTime.Format("02/Jan/2006:15:04:05 -0700")
-}
-
-func RequestType() string {
-	s := []string{"GET", "POST", "PUT", "DELETE"}
-	return s[rand.Intn(len(s))]
-}
-
-func HttpStatusCode(errRate float64) string {
-	rand.NewSource(time.Now().UnixNano())
-	if causeErr(errRate) == false {
-		return "200"
-	} else {
-		s := []string{"301", "403", "404", "500"}
-		return s[rand.Intn(len(s))]
-	}
-}
-
-func UserAgent() string {
-	rand.Seed(time.Now().UTC().UnixNano())
-	if len(useragentList) == 0 {
-		useragentList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/useragents.txt")
-	}
-	useragent := useragentList[rand.Intn(len(useragentList))]
-	return useragent
-}
-
-func Request() string {
-	if len(categoryList) == 0 {
-		categoryList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/categories.txt")
-	}
-	category := categoryList[rand.Intn(len(categoryList))]
-
-	i := rand.Intn(10)
-	if i < 7 {
-		return "\"" + RequestType() + " /category/" + category + " HTTP/1.1\" "
-	} else {
-		return "\"" + RequestType() + " /" + category + "/" + intToString(randInt(1, 999)) + " HTTP/1.1\" "
-	}
-}
-
-func Referer() string {
-	referer := "-"
-	return "\"" + referer + "\""
-}
-
-func SizeofBytes(bytes int) string {
-	return floatToIntString(randLogNormal(0.0, 0.5) * float64(bytes))
-}
-
-func ResponseTime(millisecond int) string {
-	return floatToIntString(randLogNormal(0.0, 0.5) * float64(millisecond))
-}
-
-func GetRecord(i int, config Config) string {
-	return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] " + Request() + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(config.Bytes) + " " + Referer() + " \"" + UserAgent() + "\" " + ResponseTime(config.ResponseTime)
-}
-
 func GenerateNewRecord(config Config) {
 	var weight int
 	var days = config.Days
@@ -262,4 +186,101 @@ func GenerateNewRecord(config Config) {
 			}
 		}
 	}
+}
+
+func GetRecord(i int, config Config) string {
+	if config.Format == "" {
+		return Ipv4Address(config.Prefix) + " - - [" + RequestTime(i) + "] \"" + Request() + "\" " + HttpStatusCode(config.ErrRate) + " " + SizeofBytes(config.Bytes) + " " + "\"" + Referer() + "\" " + " \"" + UserAgent() + "\" " + ResponseTime(config.ResponseTime)
+	} else {
+		return parseFormat(i, config)
+	}
+}
+
+func parseFormat(i int, config Config) string {
+	base := config.Format
+
+	formatted := strings.Replace(base, "%h", Ipv4Address(config.Prefix), 1)
+	formatted = strings.Replace(formatted, "%l", "-", 1)
+	formatted = strings.Replace(formatted, "%u", "-", 1)
+	formatted = strings.Replace(formatted, "%t", "["+RequestTime(i)+"]", 1)
+	formatted = strings.Replace(formatted, "%r", Request(), 1)
+	formatted = strings.Replace(formatted, "%>s", HttpStatusCode(config.ErrRate), 1)
+	formatted = strings.Replace(formatted, "%b", SizeofBytes(config.Bytes), 1)
+	formatted = strings.Replace(formatted, "%{Referer}i", Referer(), 1)
+	formatted = strings.Replace(formatted, "%{User-Agent}i", UserAgent(), 1)
+	formatted = strings.Replace(formatted, "%D", ResponseTime(config.ResponseTime), 1)
+
+	return formatted
+}
+
+func Ipv4Address(cidr string) string {
+	if len(ipList) == 0 {
+		v4addr, ipnet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			panic(err)
+		}
+
+		for v4addr := v4addr.Mask(ipnet.Mask); ipnet.Contains(v4addr); increnemt(v4addr) {
+			ipList = append(ipList, v4addr.String())
+		}
+	}
+
+	ip := ipList[rand.Intn(len(ipList))]
+	return ip
+}
+
+func HttpStatusCode(errRate float64) string {
+	rand.NewSource(time.Now().UnixNano())
+	if causeErr(errRate) == false {
+		return "200"
+	} else {
+		s := []string{"301", "403", "404", "500"}
+		return s[rand.Intn(len(s))]
+	}
+}
+
+func Request() string {
+	if len(categoryList) == 0 {
+		categoryList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/categories.txt")
+	}
+	category := categoryList[rand.Intn(len(categoryList))]
+
+	i := rand.Intn(10)
+	if i < 7 {
+		return RequestType() + " /category/" + category + " HTTP/1.1"
+	} else {
+		return RequestType() + " /" + category + "/" + intToString(randInt(1, 999)) + " HTTP/1.1"
+	}
+}
+
+func Referer() string {
+	referer := "-"
+	return referer
+}
+
+func RequestTime(i int) string {
+	returnTime := marker.Add(time.Second * time.Duration(i))
+	return returnTime.Format("02/Jan/2006:15:04:05 -0700")
+}
+
+func RequestType() string {
+	s := []string{"GET", "POST", "PUT", "DELETE"}
+	return s[rand.Intn(len(s))]
+}
+
+func ResponseTime(millisecond int) string {
+	return floatToIntString(randLogNormal(0.0, 0.5) * float64(millisecond))
+}
+
+func UserAgent() string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	if len(useragentList) == 0 {
+		useragentList = returnNewList(os.Getenv("GOPATH") + "/src/github.com/acroquest/apache-loggen-go/resources/useragents.txt")
+	}
+	useragent := useragentList[rand.Intn(len(useragentList))]
+	return useragent
+}
+
+func SizeofBytes(bytes int) string {
+	return floatToIntString(randLogNormal(0.0, 0.5) * float64(bytes))
 }

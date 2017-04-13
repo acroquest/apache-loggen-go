@@ -2,6 +2,8 @@
 Apache-loggen-go is a Golang script to generate dummy apache-formatted access log data.
 It can create long-term access log very easily.
 
+You can get the binary file from [here](https://github.com/acroquest/apache-loggen-go/releases).
+
 ## Usage
 
 ```bash
